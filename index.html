@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React 元件產生器</title>
+    <!-- 引入 Prism.js 的 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+        .left-panel {
+            flex: 0 0 30%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .right-panel {
+            flex: 0 0 70%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .option-group {
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .option-group h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+            font-size: 16px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        textarea {
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+            background-color: #f8f8f8;
+        }
+        .select-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .secondary-button {
+            background-color: #6c757d;
+        }
+        .secondary-button:hover {
+            background-color: #5a6268;
+        }
+        .code-container {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: #2d2d2d;
+            border-radius: 4px;
+            position: relative;
+        }
+        .code-content {
+            padding: 15px;
+            margin: 0;
+            min-height: 100%;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 1000;
+        }
+        .copy-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        /* 調整 Prism.js 的樣式 */
+        :not(pre) > code[class*="language-"],
+        pre[class*="language-"] {
+            background: #2d2d2d;
+        }
+        .line-numbers .line-numbers-rows {
+            border-right: 1px solid #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="option-group">
+                <h3>基本設定</h3>
+                <input type="text" id="filename" placeholder="請輸入元件名稱">
+            </div>
+
+            <div class="option-group">
+                <h3>模板選擇</h3>
+                <select id="templateType" class="select-input">
+                    <option value="basic">基礎元件</option>
+                    <option value="form">表單元件</option>
+                    <option value="list">清單元件</option>
+                    <option value="layout">版面元件</option>
+                </select>
+            </div>
+
+            <div class="option-group">
+                <h3>元件類型</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="radio" id="funcComponent" name="componentType" value="function" checked>
+                        <label for="funcComponent">函式元件</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="radio" id="classComponent" name="componentType" value="class">
+                        <label for="classComponent">類別元件</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="option-group">
+                <h3>功能選項</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="useProps" checked>
+                        <label for="useProps">包含 Props 型別定義</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="useStyles">
+                        <label for="useStyles">CSS 模組支援</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="useHooks">
+                        <label for="useHooks">包含常用 Hooks</label>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="generateComponent()">產生 React 元件</button>
+            <div class="button-group">
+                <button onclick="copyToClipboard()" class="secondary-button">複製程式碼</button>
+                <button onclick="downloadFile()" class="secondary-button">下載檔案</button>
+            </div>
+        </div>
+        <div class="right-panel">
+            <div class="code-container">
+                <pre class="line-numbers"><code id="output" class="language-jsx"></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入 Prism.js 的 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-jsx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+    <script>
+        function generateComponent() {
+            const input = document.getElementById('filename').value.trim();
+            if (!input) {
+                alert('請輸入元件名稱！');
+                return;
+            }
+
+            const componentName = input
+                .split(/\s+/)
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                .join('');
+
+            const isFunction = document.getElementById('funcComponent').checked;
+            const useProps = document.getElementById('useProps').checked;
+            const useStyles = document.getElementById('useStyles').checked;
+            const useHooks = document.getElementById('useHooks').checked;
+            const templateType = document.getElementById('templateType').value;
+
+            let template = '';
+
+            // 導入聲明
+            template += `import React${useHooks ? ', { useState, useEffect }' : ''} from 'react';\n`;
+            if (useProps) {
+                template += `import PropTypes from 'prop-types';\n`;
+            }
+            if (useStyles) {
+                template += `import styles from './${componentName}.module.css';\n`;
+            }
+            template += '\n';
+
+            if (isFunction) {
+                // 函數組件
+                template += `export const ${componentName} = (${useProps ? 'props' : ''}) => {\n`;
+                if (useHooks) {
+                    template += `    const [count, setCount] = useState(0);\n\n`;
+                    template += `    useEffect(() => {\n`;
+                    template += `        console.log('Component mounted');\n`;
+                    template += `    }, []);\n\n`;
+                }
+                template += `    return (\n`;
+                template += `        <div${useStyles ? ' className={styles.container}' : ''}>\n`;
+                template += `            <h1>${componentName}</h1>\n`;
+                if (useHooks) {
+                    template += `            <button onClick={() => setCount(count + 1)}>Count: {count}</button>\n`;
+                }
+                template += `        </div>\n`;
+                template += `    );\n`;
+            } else {
+                // 類組件
+                template += `export class ${componentName} extends React.Component {\n`;
+                template += `    constructor(props) {\n`;
+                template += `        super(props);\n`;
+                template += `        this.state = {\n`;
+                template += `            count: 0\n`;
+                template += `        };\n`;
+                template += `    }\n\n`;
+                template += `    componentDidMount() {\n`;
+                template += `        console.log('Component mounted');\n`;
+                template += `    }\n\n`;
+                template += `    render() {\n`;
+                template += `        return (\n`;
+                template += `            <div${useStyles ? ' className={styles.container}' : ''}>\n`;
+                template += `                <h1>${componentName}</h1>\n`;
+                template += `                <button onClick={() => this.setState({ count: this.state.count + 1 })}>\n`;
+                template += `                    Count: {this.state.count}\n`;
+                template += `                </button>\n`;
+                template += `            </div>\n`;
+                template += `        );\n`;
+                template += `    }\n`;
+                template += `}\n\n`;
+            }
+
+            if (useProps) {
+                template += `${componentName}.propTypes = {\n`;
+                template += `    // 在此定義 props 類型\n`;
+                template += `    title: PropTypes.string,\n`;
+                template += `    onClick: PropTypes.func\n`;
+                template += `};\n\n`;
+            }
+
+            // 根據模板類型生成不同的組件結構
+            if (templateType === 'form') {
+                // 生成表單組件模板
+                template += `    return (
+        <form className={styles.form} onSubmit={(e) => e.preventDefault()}>
+            <div className={styles.formGroup}>
+                <label htmlFor="name">名稱：</label>
+                <input type="text" id="name" />
+            </div>
+            <div className={styles.formGroup}>
+                <label htmlFor="email">郵箱：</label>
+                <input type="email" id="email" />
+            </div>
+            <button type="submit">提交</button>
+        </form>
+    );\n`;
+            } else if (templateType === 'list') {
+                // 生成列表組件模板
+                template += `    const items = ['項目1', '項目2', '項目3'];
+    return (
+        <ul className={styles.list}>
+            {items.map((item, index) => (
+                <li key={index} className={styles.listItem}>{item}</li>
+            ))}
+        </ul>
+    );\n`;
+            }
+
+            template += `export default ${componentName};\n`;
+
+            const outputElement = document.getElementById('output');
+            outputElement.textContent = template;
+            Prism.highlightElement(outputElement);
+        }
+
+        function copyToClipboard() {
+            const output = document.getElementById('output');
+            const textToCopy = output.textContent;
+            
+            // 使用新的 Clipboard API
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('程式碼已複製到剪貼簿！');
+            }).catch(err => {
+                console.error('複製失敗：', err);
+                alert('複製失敗，請手動複製。');
+            });
+        }
+
+        function downloadFile() {
+            const componentName = document.getElementById('filename').value.trim();
+            if (!componentName) {
+                alert('請先輸入元件名稱！');
+                return;
+            }
+
+            const content = document.getElementById('output').textContent;
+            const blob = new Blob([content], { type: 'text/javascript' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${componentName}.jsx`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+    </script>
+</body>
+</html> 
