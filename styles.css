@@ -1,0 +1,236 @@
+:root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #383838;
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --border-color: #404040;
+    --accent-color: #4CAF50;
+    --accent-hover: #45a049;
+    --input-bg: #2d2d2d;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    background-color: var(--bg-secondary);
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2em;
+    color: var(--text-primary);
+}
+
+.header p {
+    margin: 10px 0 0;
+    color: var(--text-secondary);
+    font-size: 1.1em;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+
+.container {
+    display: flex;
+    gap: 20px;
+    height: calc(100vh - 160px);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.left-panel, .right-panel {
+    background-color: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.left-panel {
+    flex: 0 0 30%;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.right-panel {
+    flex: 0 0 70%;
+}
+
+.option-group {
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background-color: var(--bg-tertiary);
+}
+
+.option-group h3 {
+    margin: 0 0 10px 0;
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+input[type="text"], .select-input {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+}
+
+input[type="text"]::placeholder {
+    color: var(--text-secondary);
+}
+
+.select-input {
+    margin-bottom: 10px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+}
+
+input[type="radio"], input[type="checkbox"] {
+    accent-color: var(--accent-color);
+}
+
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: var(--accent-hover);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.secondary-button {
+    background-color: var(--bg-tertiary);
+}
+
+.secondary-button:hover {
+    background-color: #4a4a4a;
+}
+
+.code-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: var(--bg-secondary);
+    border-radius: 4px;
+    position: relative;
+    border: 1px solid var(--border-color);
+}
+
+pre[class*="language-"] {
+    margin: 0;
+    padding: 15px;
+    background-color: var(--bg-secondary) !important;
+}
+
+code[class*="language-"] {
+    font-family: 'Consolas', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.line-numbers .line-numbers-rows {
+    border-right: 1px solid var(--border-color);
+    background-color: var(--bg-tertiary);
+}
+
+/* 自訂捲軸樣式 */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--bg-tertiary);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #4a4a4a;
+}
+
+/* 選取文字的顏色 */
+::selection {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.select-group, .input-group {
+    margin-bottom: 15px;
+}
+
+.select-group label, .input-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--text-primary);
+}
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .left-panel, .right-panel {
+        flex: none;
+        width: 100%;
+    }
+}
+
+/* 動態隱藏元素 */
+.hidden {
+    display: none !important;
+}
